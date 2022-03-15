@@ -3,6 +3,7 @@ const setup = require('../data/setup');
 const request = require('supertest');
 const app = require('../lib/app');
 const Order = require('../lib/models/Order');
+const { getById } = require('../lib/models/Order');
 
 // TODO: Remove this function & use the Order model
 // async function createOrder({ product, quantity }) {
@@ -72,21 +73,6 @@ describe('refactory routes', () => {
     ]);
   });
 
-  //   it('should be able to update an order', async () => {
-  //     const order = await createOrder({ product: 'Widget', quantity: 1 });
-  //     const res = await request(app)
-  //       .patch(`/api/v1/orders/${order.id}`)
-  //       .send({ product: 'Thingamajig', quantity: 2 });
-
-  //     const expected = {
-  //       id: expect.any(String),
-  //       product: 'Thingamajig',
-  //       quantity: 2,
-  //     };
-
-  //     expect(res.body).toEqual(expected);
-  //     expect(await getOrderById(order.id)).toEqual(expected);
-  //   });
   it('should be able to update an order', async () => {
     const res = await request(app)
       .patch('/api/v1/orders/1')
@@ -106,7 +92,19 @@ describe('refactory routes', () => {
   //     const order = await createOrder({ product: 'Widget', quantity: 1 });
   //     const res = await request(app).delete(`/api/v1/orders/${order.id}`);
 
-//     expect(res.body).toEqual(order);
-//     expect(await getOrderById(order.id)).toBeNull();
-//   });
+  //     expect(res.body).toEqual(order);
+  //     expect(await getOrderById(order.id)).toBeNull();
+  //   });
+  it('should be able to delete an order', async () => {
+    // const order = await Order.insert({ product: 'Widget', quantity: 1 });
+    // const res = await request(app).delete(`/api/v1/orders/${order.id}`);
+    const res = await request(app)
+      .delete('/api/v1/orders/1');
+
+    console.log('|| res.body >', res.body);
+    // const test = await Order.getById(1);
+    // console.log('|| test >', test);
+    // expect(res.body).toEqual(order);
+    expect(await Order.getById(1)).toBeNull();
+  });
 });

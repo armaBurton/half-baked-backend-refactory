@@ -46,12 +46,6 @@ describe('refactory routes', () => {
     });
   });
 
-  // it('should be able to list an order by id', async () => {
-  //   const order = await createOrder({ product: 'Widget', quantity: 1 });
-  //   const res = await request(app).get(`/api/v1/orders/${order.id}`);
-
-  //   expect(res.body).toEqual(order);
-  // });
   it('should be able to list an order by id', async () => {
     const res = await request(app)
       .get('/api/v1/orders/1')
@@ -64,18 +58,19 @@ describe('refactory routes', () => {
     });
   });
 
-  //   it('should be able to list orders', async () => {
-  //     await createOrder({ product: 'Widget', quantity: 1 });
-  //     const res = await request(app).get('/api/v1/orders');
+  it('should be able to list orders', async () => {
+    const res = await request(app)
+      .get('/api/v1/orders')
+      .send({ product: 'Widget', quantity: 1 });
 
-  //     expect(res.body).toEqual([
-  //       {
-  //         id: expect.any(String),
-  //         product: 'Widget',
-  //         quantity: 1,
-  //       },
-  //     ]);
-  //   });
+    expect(res.body).toEqual([
+      {
+        id: expect.any(String),
+        product: 'Widget',
+        quantity: 1,
+      }
+    ]);
+  });
 
   //   it('should be able to update an order', async () => {
   //     const order = await createOrder({ product: 'Widget', quantity: 1 });
@@ -92,6 +87,20 @@ describe('refactory routes', () => {
   //     expect(res.body).toEqual(expected);
   //     expect(await getOrderById(order.id)).toEqual(expected);
   //   });
+  it('should be able to update an order', async () => {
+    const res = await request(app)
+      .patch('/api/v1/orders/1')
+      .send({ product: 'Thingamajig', quantity: 2 });
+
+    const expected = {
+      id: expect.any(String),
+      product: 'Thingamajig',
+      quantity: 2,
+    };
+
+    expect(res.body).toEqual(expected);
+    expect(await getOrderById(order.id)).toEqual(expected);
+  });
 
   //   it('should be able to delete an order', async () => {
   //     const order = await createOrder({ product: 'Widget', quantity: 1 });

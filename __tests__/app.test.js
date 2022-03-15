@@ -99,7 +99,7 @@ describe('refactory routes', () => {
     };
 
     expect(res.body).toEqual(expected);
-    expect(await getOrderById(order.id)).toEqual(expected);
+    expect(await Order.getById(1)).toEqual(expected);
   });
 
   //   it('should be able to delete an order', async () => {

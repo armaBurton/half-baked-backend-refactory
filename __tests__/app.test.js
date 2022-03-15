@@ -5,27 +5,6 @@ const app = require('../lib/app');
 const Order = require('../lib/models/Order');
 const { getById } = require('../lib/models/Order');
 
-// TODO: Remove this function & use the Order model
-// async function createOrder({ product, quantity }) {
-//   const { rows } = await pool.query(
-//     'INSERT INTO orders(product, quantity) VALUES ($1, $2) RETURNING *;',
-//     [product, quantity]
-//   );
-//   return new Order(rows[0]);
-// }
-
-// TODO: Remove this function & use the Order model
-// async function getOrderById(id) {
-//   const { rows } = await pool.query(
-//     'SELECT * FROM orders WHERE id=$1;',
-//     [id]
-//   );
-
-//   if (!rows[0]) return null;
-
-//   return new Order(rows[0]);
-// }
-
 describe('refactory routes', () => {
   beforeEach(() => {
     return setup(pool);
@@ -39,6 +18,7 @@ describe('refactory routes', () => {
     const res = await request(app)
       .post('/api/v1/orders')
       .send({ product: 'Widget', quantity: 1 });
+
 
     expect(res.body).toEqual({
       id: expect.any(String),
@@ -74,6 +54,11 @@ describe('refactory routes', () => {
   });
 
   it('should be able to update an order', async () => {
+    await Order.insert({
+      product: 'Widget',
+      quantity: 1,
+    });
+
     const res = await request(app)
       .patch('/api/v1/orders/1')
       .send({ product: 'Thingamajig', quantity: 2 });
@@ -88,23 +73,19 @@ describe('refactory routes', () => {
     expect(await Order.getById(1)).toEqual(expected);
   });
 
-  //   it('should be able to delete an order', async () => {
-  //     const order = await createOrder({ product: 'Widget', quantity: 1 });
-  //     const res = await request(app).delete(`/api/v1/orders/${order.id}`);
-
-  //     expect(res.body).toEqual(order);
-  //     expect(await getOrderById(order.id)).toBeNull();
-  //   });
   it('should be able to delete an order', async () => {
-    // const order = await Order.insert({ product: 'Widget', quantity: 1 });
-    // const res = await request(app).delete(`/api/v1/orders/${order.id}`);
+    const order = await Order.insert({
+      product: 'Widget',
+      quantity: 1,
+    });
+
     const res = await request(app)
       .delete('/api/v1/orders/1');
 
-    console.log('|| res.body >', res.body);
-    // const test = await Order.getById(1);
-    // console.log('|| test >', test);
-    // expect(res.body).toEqual(order);
+    const thingy = await Order.getById(1);
+
+    expect(res.body).toEqual(order);
     expect(await Order.getById(1)).toBeNull();
   });
+
 });
